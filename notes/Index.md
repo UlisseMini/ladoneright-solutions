@@ -1,15 +1,3 @@
-## Hello!
+These are my solutions to axler's linear algebra done right, to view a specific solution go to `/section/number`, eg. to view my solution to exercise `1` in section `2.A` go to `/2a/1`.
 
-This is an obsidian note, it can link to other notes via wikilinks (see: [[Configuration is bloat]] and [[subdir/It handles subdirectories]])
-
-We can do code highlighting
-```python
-import foo from bar
-def baz():
-	bar.qux()
-```
-
-We can handle inline $2+2$ and display math
-$$
-\sin(x) = x - \frac{x^3}{3!} + \frac{x^5}{5!} - \dots = \sum_{k=0}^\infty \frac{x^{2k + 1}}{(2k+1)!}
-$$
+I'll generate a list of the solutions I've completed later, for now check [github](https://github.com/UlisseMini/ladoneright-solutions/tree/main/notes).
