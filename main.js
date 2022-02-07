@@ -41,6 +41,11 @@ async function main() {
     "node_modules/highlight.js/styles/default.css",
     "out/highlight.css"
   );
+
+  // A general solution would be to check for index.js, then pass it the content from index.md
+  // this is quicker though.
+  const indexHTML = (await import("./notes/index.js")).html;
+  await fs.writeFile("out/index.html", indexHTML);
 }
 
 async function compile(file) {
