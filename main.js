@@ -53,7 +53,7 @@ async function compile(file) {
   file.value = fm.body;
 
   // Relative path to root, needed to handle the root being user.github.io/project
-  const depth = file.path.split("/").reverse().lastIndexOf("notes");
+  const depth = file.path.split("/").reverse().lastIndexOf("notes") - 1;
   const root = "../".repeat(depth);
 
   return await unified()
