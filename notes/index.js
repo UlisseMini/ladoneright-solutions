@@ -15,9 +15,9 @@ export const html = String.raw`
 <meta charset="utf-8">
 <title>Index</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="../styles.css">
-<link rel="stylesheet" href="../highlight.css">
-<link rel="stylesheet" href="../katex.min.css">
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="highlight.css">
+<link rel="stylesheet" href="katex.min.css">
 </head>
 <body>
 <p>These are my solutions to axler's linear algebra done right, to view a specific solution go to <code>/section/number</code>, eg. to view my solution to exercise <code>1</code> in section <code>2.A</code> go to <code>/2a/1</code>.</p>
