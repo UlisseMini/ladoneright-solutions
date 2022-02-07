@@ -19,3 +19,7 @@ pre {
   -moz-tab-size: 2;
   tab-size: 2;
 }
+
+.column-count {
+  column-count: 3;
+}
