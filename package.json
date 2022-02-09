@@ -9,6 +9,7 @@
     "build": "node main.js"
   },
   "dependencies": {
+    "dictionary-en-gb": "^2.3.0",
     "front-matter": "^4.0.2",
     "fs-extra": "^10.0.0",
     "glob": "^7.2.0",
@@ -23,8 +24,11 @@
     "remark-math": "^5.1.1",
     "remark-parse": "^10.0.1",
     "remark-rehype": "^10.1.0",
+    "remark-retext": "^5.0.1",
     "remark-validate-links": "^11.0.2",
     "remark-wiki-link": "^1.0.4",
+    "retext-english": "^4.1.0",
+    "retext-spell": "^5.1.0",
     "to-vfile": "^7.2.3",
     "unified": "^10.1.1",
     "vfile-reporter": "^7.0.3"

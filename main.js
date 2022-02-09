@@ -10,6 +10,10 @@ import remarkMath from "remark-math";
 import remarkWikiLink from "remark-wiki-link";
 import remarkBreaks from "remark-breaks";
 import remarkValidateLinks from "remark-validate-links";
+import retextSpell from "retext-spell";
+import remarkRetext from "remark-retext";
+import retextEnglish from "retext-english";
+import dictionary from "dictionary-en-gb";
 import klaw from "klaw";
 import path from "path";
 import fs from "fs-extra";
@@ -72,6 +76,7 @@ async function compile(file) {
     .use(remarkBreaks)
     .use(remarkNoInlineDoubleDollar)
     .use(remarkValidateLinks)
+    .use(remarkRetext, unified().use(retextEnglish).use(retextSpell, dictionary))
     .use(remarkRehype)
     .use(rehypeHighlight)
     .use(rehypeKatex)
