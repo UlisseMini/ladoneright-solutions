@@ -1,5 +1,5 @@
-import { unified } from "unified";
-import { read, write } from "to-vfile";
+import {unified} from "unified";
+import {read, write} from "to-vfile";
 import remarkParse from "remark-parse";
 import remarkRehype from "remark-rehype";
 import rehypeStringify from "rehype-stringify";
@@ -8,10 +8,13 @@ import rehypeHighlight from "rehype-highlight";
 import rehypeKatex from "rehype-katex";
 import remarkMath from "remark-math";
 import remarkWikiLink from "remark-wiki-link";
+import remarkBreaks from "remark-breaks";
 import klaw from "klaw";
 import path from "path";
 import fs from "fs-extra";
 import frontmatter from "front-matter";
+import {reporter} from "vfile-reporter";
+import {visit} from "unist-util-visit";
 
 main();
 
@@ -25,9 +28,8 @@ async function main() {
       htmlVFile.extname = ".html";
       htmlVFile.stem = pageResolver(sourceVFile.stem);
 
-      await fs.mkdir(htmlVFile.dirname, { recursive: true });
+      await fs.mkdir(htmlVFile.dirname, {recursive: true});
       await write(htmlVFile);
-      console.log(`wrote ${htmlVFile.path}`);
     } else {
       if (!file.stats.isDirectory() && !file.path.includes(".obsidian")) {
         await copy(file.path, notesToOutPath(file.path));
@@ -66,6 +68,8 @@ async function compile(file) {
       hrefTemplate: (permalink) => permalink,
     })
     .use(remarkMath)
+    .use(remarkBreaks)
+    .use(remarkNoInlineDoubleDollar)
     .use(remarkRehype)
     .use(rehypeHighlight)
     .use(rehypeKatex)
@@ -79,7 +83,29 @@ async function compile(file) {
       ],
     })
     .use(rehypeStringify)
-    .process(file);
+    .process(file)
+    .then((file) => {
+      process.stderr.write(reporter(file, {quiet: true}))
+      return file
+    })
+}
+
+function remarkNoInlineDoubleDollar() {
+
+  return (tree, file) => {
+    visit(tree, 'inlineMath', (node) => {
+      const start = node.position.start.offset
+      const end = node.position.end.offset
+      const lexeme = file.value.slice(start, end)
+
+      if (lexeme.startsWith("$$")) {
+        file.message(
+          "$$math$$ renders inline in remark-math but display in obsidian. Did you forget newlines?",
+          node,
+        )
+      }
+    })
+  }
 }
 
 // convert "Hello World.md" -> hello-world.md
@@ -90,5 +116,4 @@ const notesToOutPath = (p) => path.join("out", path.relative("notes", p));
 
 async function copy(src, dst) {
   await fs.copy(src, dst);
-  console.log(`copied ${src} -> ${dst}`);
 }
