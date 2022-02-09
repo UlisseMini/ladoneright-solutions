@@ -65,7 +65,7 @@ async function compile(file) {
       // code is done here: https://github.com/landakram/micromark-extension-wiki-link
       aliasDivider: "|",
       pageResolver: (name) => [pageResolver(name)],
-      hrefTemplate: (permalink) => permalink,
+      hrefTemplate: (permalink) => root + permalink,
     })
     .use(remarkMath)
     .use(remarkBreaks)
