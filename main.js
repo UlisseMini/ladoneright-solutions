@@ -9,6 +9,7 @@ import rehypeKatex from "rehype-katex";
 import remarkMath from "remark-math";
 import remarkWikiLink from "remark-wiki-link";
 import remarkBreaks from "remark-breaks";
+import remarkValidateLinks from "remark-validate-links";
 import klaw from "klaw";
 import path from "path";
 import fs from "fs-extra";
@@ -70,6 +71,7 @@ async function compile(file) {
     .use(remarkMath)
     .use(remarkBreaks)
     .use(remarkNoInlineDoubleDollar)
+    .use(remarkValidateLinks)
     .use(remarkRehype)
     .use(rehypeHighlight)
     .use(rehypeKatex)
