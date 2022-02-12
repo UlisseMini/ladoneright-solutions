@@ -63,6 +63,14 @@ async function compile(file) {
   const depth = file.path.split("/").reverse().lastIndexOf("notes") - 1;
   const root = "../".repeat(depth);
 
+  const solutionRegex = /(\d\w)\/(\d\d?)\.md/
+  const relativePath = path.relative("notes", file.path)
+  const meta = {
+    description: solutionRegex.test(relativePath)
+      ? relativePath.replace(solutionRegex, "Solution $1 $2 to Axler's Linear Algebra Done Right")
+      : "Solutions to Axler's Linear Algebra Done Right"
+  }
+
   return await unified()
     .use(remarkParse)
     .use(remarkWikiLink, {
@@ -76,12 +84,14 @@ async function compile(file) {
     .use(remarkBreaks)
     .use(remarkNoInlineDoubleDollar)
     .use(remarkValidateLinks)
-    .use(remarkRetext, unified().use(retextEnglish).use(retextSpell, dictionary))
+    // uncomment if you want to spellcheck
+    // .use(remarkRetext, unified().use(retextEnglish).use(retextSpell, dictionary))
     .use(remarkRehype)
     .use(rehypeHighlight)
     .use(rehypeKatex)
     .use(rehypeDocument, {
       title: fm.attributes.title || file.stem,
+      meta: meta,
       // Could fetch @latest css, but I'm afraid of breaking changes (eg. class name changes)
       css: [
         root + "styles.css",
@@ -120,6 +130,7 @@ const pageResolver = (name) => name.toLowerCase().replace(/ /g, "-");
 
 // convert a/b/notes/c/d -> a/b/out/c/d
 const notesToOutPath = (p) => path.join("out", path.relative("notes", p));
+
 
 async function copy(src, dst) {
   await fs.copy(src, dst);
