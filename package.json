@@ -13,6 +13,7 @@
     "front-matter": "^4.0.2",
     "fs-extra": "^10.0.0",
     "glob": "^7.2.0",
+    "hastscript": "^7.0.2",
     "highlight.js": "^11.4.0",
     "katex": "^0.15.2",
     "klaw": "^4.0.1",
@@ -31,6 +32,7 @@
     "retext-spell": "^5.1.0",
     "to-vfile": "^7.2.3",
     "unified": "^10.1.1",
+    "vfile": "^5.3.0",
     "vfile-reporter": "^7.0.3"
   }
 }
