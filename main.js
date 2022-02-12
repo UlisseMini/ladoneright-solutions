@@ -1,5 +1,5 @@
-import {unified} from "unified";
-import {read, write} from "to-vfile";
+import { unified } from "unified";
+import { read, write } from "to-vfile";
 import remarkParse from "remark-parse";
 import remarkRehype from "remark-rehype";
 import rehypeStringify from "rehype-stringify";
@@ -18,15 +18,15 @@ import klaw from "klaw";
 import path from "path";
 import fs from "fs-extra";
 import frontmatter from "front-matter";
-import {reporter} from "vfile-reporter";
-import {visit} from "unist-util-visit";
-import {VFile} from 'vfile';
+import { reporter } from "vfile-reporter";
+import { visit } from "unist-util-visit";
+import { VFile } from "vfile";
 
 main();
 
 async function main() {
   for await (const file of klaw("./notes")) {
-    const ext = path.extname(file.path)
+    const ext = path.extname(file.path);
     if (ext === ".md") {
       const markdownVFile = await read(file.path);
       await compileAndWrite(markdownVFile);
@@ -35,7 +35,7 @@ async function main() {
       // notes if they're annotated with "// :run:", this is a bit complicated
       // to add, but is the nicest way to do this without leaving obsidian.
       const markdown = (await import(file.path)).markdown;
-      const markdownVFile = new VFile({path: file.path, value: markdown});
+      const markdownVFile = new VFile({ path: file.path, value: markdown });
       await compileAndWrite(markdownVFile);
     } else {
       if (!file.stats.isDirectory() && !file.path.includes(".obsidian")) {
@@ -60,18 +60,21 @@ async function compile(file) {
   const depth = file.path.split("/").reverse().lastIndexOf("notes") - 1;
   const root = "../".repeat(depth);
 
-  const solutionRegex = /(\d\w)\/(\d\d?)\.md/
-  const relativePath = path.relative("notes", file.path)
+  const solutionRegex = /(\d\w)\/(\d\d?)\.md/;
+  const relativePath = path.relative("notes", file.path);
   const meta = {
     description: solutionRegex.test(relativePath)
-      ? relativePath.replace(solutionRegex, "Solution $1 $2 to Axler's Linear Algebra Done Right")
-      : "Solutions to Axler's Linear Algebra Done Right"
-  }
-  const title = fm.attributes.title || (
-    solutionRegex.test(relativePath)
+      ? relativePath.replace(
+          solutionRegex,
+          "Solution $1 $2 to Axler's Linear Algebra Done Right"
+        )
+      : "Solutions to Axler's Linear Algebra Done Right",
+  };
+  const title =
+    fm.attributes.title ||
+    (solutionRegex.test(relativePath)
       ? relativePath.replace(solutionRegex, "Solution $1 $2")
-      : file.stem
-  )
+      : file.stem);
 
   return await unified()
     .use(remarkParse)
@@ -88,7 +91,7 @@ async function compile(file) {
     .use(remarkValidateLinks)
     // uncomment if you want to spellcheck
     // .use(remarkRetext, unified().use(retextEnglish).use(retextSpell, dictionary))
-    .use(remarkRehype, {allowDangerousHtml: true})
+    .use(remarkRehype, { allowDangerousHtml: true })
     .use(rehypeHighlight)
     .use(rehypeKatex)
     .use(rehypeDocument, {
@@ -105,40 +108,39 @@ async function compile(file) {
       // TODO: Use a rehype-head plugin or something to add this
       // <script async defer data-domain="ulissemini.github.io" src="https://a.nerdsniper.net/a.js"></script>
     })
-    .use(rehypeStringify, {allowDangerousHtml: true})
+    .use(rehypeStringify, { allowDangerousHtml: true })
     .process(file)
     .then((file) => {
-      process.stderr.write(reporter(file, {quiet: true}))
-      return file
-    })
+      process.stderr.write(reporter(file, { quiet: true }));
+      return file;
+    });
 }
 
 async function compileAndWrite(markdownVFile) {
-  const htmlVFile = await compile(markdownVFile)
+  const htmlVFile = await compile(markdownVFile);
   htmlVFile.dirname = notesToOutPath(markdownVFile.dirname);
   htmlVFile.extname = ".html";
   htmlVFile.stem = pageResolver(markdownVFile.stem);
 
-  await fs.mkdir(htmlVFile.dirname, {recursive: true});
+  await fs.mkdir(htmlVFile.dirname, { recursive: true });
   await write(htmlVFile);
 }
 
 function remarkNoInlineDoubleDollar() {
-
   return (tree, file) => {
-    visit(tree, 'inlineMath', (node) => {
-      const start = node.position.start.offset
-      const end = node.position.end.offset
-      const lexeme = file.value.slice(start, end)
+    visit(tree, "inlineMath", (node) => {
+      const start = node.position.start.offset;
+      const end = node.position.end.offset;
+      const lexeme = file.value.slice(start, end);
 
       if (lexeme.startsWith("$$")) {
         file.message(
           "$$math$$ renders inline in remark-math but display in obsidian. Did you forget newlines?",
-          node,
-        )
+          node
+        );
       }
-    })
-  }
+    });
+  };
 }
 
 // convert "Hello World.md" -> hello-world.md
