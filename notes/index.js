@@ -1,11 +1,20 @@
 import glob from "glob";
 import path from "path";
+import fs from "fs-extra";
 
-const completedListHTML = glob
-  .sync("notes/*/*.md")
+// TODO: make async
+const files = glob.sync("notes/*/*.md");
+
+const classes = await Promise.all(
+  files.map(async (file) =>
+    /todo/i.test(await fs.readFile(file)) ? "todo" : "not-todo"
+  )
+);
+
+const completedListHTML = files
   .map((p) => path.relative("notes", p.replace(/\.md$/, "")))
   .filter((p) => p.match(/\d\w\/\d+/))
-  .map((p) => `<li><a href="${p}">${p}</a></li>`)
+  .map((p, i) => `<li class=\"${classes[i]}\"><a href=\"${p}\">${p}</a></li>`)
   .join("\n");
 
 export const markdown = `
