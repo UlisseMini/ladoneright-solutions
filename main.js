@@ -57,8 +57,9 @@ async function compile(file) {
   file.value = fm.body;
 
   // Relative path to root, needed to handle the root being user.github.io/project
-  const depth = file.path.split("/").reverse().lastIndexOf("notes") - 1;
-  const root = "../".repeat(depth);
+  // const depth = file.path.split("/").reverse().lastIndexOf("notes") - 1;
+  // const root = "../".repeat(depth);
+  const root = "https://uli.rocks/axler/";
 
   const solutionRegex = /(\d\w)\/(\d\d?)\.md/;
   const relativePath = path.relative("notes", file.path);
