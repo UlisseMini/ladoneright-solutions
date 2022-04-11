@@ -104,6 +104,7 @@ async function compile(file) {
         root + "highlight.css",
         root + "katex.min.css",
       ],
+      js: [root + "main.js"],
 
       // TODO: Use a rehype-head plugin or something to add this
       // <script async defer data-domain="ulissemini.github.io" src="https://a.nerdsniper.net/a.js"></script>
